@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Http, Response } from '@angular/http';
+import { Http, Response, Headers, RequestOptions } from '@angular/http';
 
 import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/operator/do';
@@ -25,6 +25,13 @@ export class ProductService {
     getProduct(id: number): Observable<IProduct> {
         return this.getProducts()
             .map((products: IProduct[]) => products.find(p => p.productId === id));
+    }
+
+    addProduct(product: IProduct): Observable<IProduct> {
+        let headers = new Headers({ 'Content-Type': 'application/json' });
+        let options = new RequestOptions({ headers: headers });
+        return this._http.post(this._productUrl, {param: product}, options)
+            .map((response: Response) => <IProduct> response.json())
     }
 
     private handleError(error: Response) {

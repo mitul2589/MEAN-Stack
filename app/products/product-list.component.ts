@@ -1,10 +1,14 @@
-import { Component, OnInit, ViewContainerRef }  from '@angular/core';
-import { Modal } from 'angular2-modal/plugins/bootstrap';
-import { Overlay } from 'angular2-modal';
+import { Component, OnInit, ViewContainerRef, ViewEncapsulation }  from '@angular/core';
+import { Modal, BSModalContext } from 'angular2-modal/plugins/bootstrap';
+
+import { Overlay, overlayConfigFactory } from 'angular2-modal';
+
 import { AdditionCalculateWindow, AdditionCalculateWindowData } from './custom-modal';
 
 import { IProduct } from './product';
 import { ProductService } from './product.service';
+
+import {NgForm} from '@angular/forms';
 
 @Component({
     templateUrl: 'app/products/product-list.component.html',
@@ -21,8 +25,8 @@ export class ProductListComponent implements OnInit {
 
     products: IProduct[];
 
-    constructor(private _productService: ProductService, overlay: Overlay, vcRef: ViewContainerRef, public modal: Modal) {
-        overlay.defaultViewContainer = vcRef;
+    constructor(private _productService: ProductService, vcRef: ViewContainerRef, public modal: Modal) {
+        //modal.
     }
 
     toggleImage(): void {
@@ -40,6 +44,11 @@ export class ProductListComponent implements OnInit {
     }
 
     openProductEditor(): void {
-        this.modal.open(AdditionCalculateWindow);
+        this.modal.open(AdditionCalculateWindow, overlayConfigFactory({ num1: 2, num2: 3 }, BSModalContext));
+    }
+
+    onSubmit(productEditor: NgForm): void {
+         console.log(productEditor);
+         debugger;
     }
 }
