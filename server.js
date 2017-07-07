@@ -25,6 +25,16 @@ app.get('/test', function (req, res) {
     res.sendFile(path.join(__dirname + '/index.html'));
 });
 
+
+/*function getNextSequenceValue(sequenceName) {
+
+   
+    return 2;
+
+}*/
+
+
+
 app.get('/api/products/', function (req, res) {
     var parr = [];
     mongoose.connect(url, function (err, db) {
@@ -53,12 +63,26 @@ app.post('/api/products/', function (req, res) {
 
     mongoose.connect(url, function (err, db) {
         if (err) {
-            console.log("Error");
+            console.log("Error" + err);
         } else {
             console.log("Yes, Connected...!!!!");
         }
 
+        function getNextSequenceValue(sequenceName) {
+
+            var sequenceDocument = db.counters.findAndModify({
+                query: { _id: sequenceName },
+                update: { $inc: { sequence_value: 1 } },
+                new: true
+            });
+
+            return 2;
+
+        }
+
         var newproduct = new Product(req.body);
+
+        newproduct._id = getNextSequenceValue("productId"); //this.getNextSequenceValue('productId');
         console.log("newproduct --->>>" + newproduct);
 
         newproduct.save((err, item) => {
@@ -110,7 +134,7 @@ app.delete('/api/products/:productId', function (req, res) {
 
         Product.remove({ 'productId': req.params.productId }, (err, result) => {
             console.log("result ---->>>>" + result);
-            
+
             if (err) {
                 console.log("Product Deleting Error" + err);
             } else if (result) {
