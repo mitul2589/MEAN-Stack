@@ -2,7 +2,7 @@ var mongoose = require('mongoose'),
       Schema = mongoose.Schema;
 
 var ProductSchema = new Schema({
-  productId   : { type : Number, required: true},
+  _id: {type: Number, required: true},
   productName    : { type : String, required: true, trim: true },
   productCode       : { type : String, required: true, trim: true },
   releaseDate     : { type : Date, required: true },
