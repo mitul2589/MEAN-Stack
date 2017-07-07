@@ -24,7 +24,11 @@ export class ProductDetailComponent implements OnInit, OnDestroy {
         this.sub = this._route.params.subscribe(
             params => {
                 let id = +params['id'];
-                this.getProduct(id);
+                this._productService.getProduct(id);
+                this._productService.list1Event.subscribe((data: any) => {
+                    console.log(data);
+                    this.product = data;
+                });
         });
     }
 
@@ -33,9 +37,16 @@ export class ProductDetailComponent implements OnInit, OnDestroy {
     }
 
     getProduct(id: number) {
+        /*this._productService.list1Event.subscribe((data: any) => {
+              console.log(data);
+              this.product = data;
+        });*/
+        
+        /*
         this._productService.getProduct(id).subscribe(
             product => this.product = product,
             error => this.errorMessage = <any>error);
+        */
     }
 
     onBack(): void {

@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, EventEmitter } from '@angular/core';
 import { Http, Response, Headers, RequestOptions } from '@angular/http';
 
 import { Observable } from 'rxjs/Observable';
@@ -13,6 +13,8 @@ import { IProduct } from './product';
 export class ProductService {
     private _productUrl = 'api/products';
 
+    list1Event: EventEmitter<any> = new EventEmitter();
+
     constructor(private _http: Http) { }
 
     getProducts(): Observable<IProduct[]> {
@@ -22,16 +24,29 @@ export class ProductService {
             .catch(this.handleError);
     }
 
-    getProduct(id: number): Observable<IProduct> {
+    getProduct(id: number) {
         return this.getProducts()
-            .map((products: IProduct[]) => products.find(p => p.productId === id));
+            .map((products: IProduct[]) => products.find(p => p.productId === id))
+            .subscribe((data) => this.list1Event.emit(data)); 
     }
 
     addProduct(product: IProduct): Observable<IProduct> {
         let headers = new Headers({ 'Content-Type': 'application/json' });
         let options = new RequestOptions({ headers: headers });
-        return this._http.post(this._productUrl, {param: product}, options)
+        return this._http.post(this._productUrl, product, options)
             .map((response: Response) => <IProduct> response.json())
+    }
+
+    editProduct(product: IProduct): Observable<IProduct> {
+        let headers = new Headers({ 'Content-Type': 'application/json' });
+        let options = new RequestOptions({ headers: headers });
+        return this._http.put(this._productUrl, product, options)
+            .map((response: Response) => <IProduct> response.json())
+    }
+
+    deleteProduct(product: IProduct): Observable<void> {
+        return this._http.delete(this._productUrl + '/' + product.productId, product)
+               .map((response: Response) => {});
     }
 
     private handleError(error: Response) {

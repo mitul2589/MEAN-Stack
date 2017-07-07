@@ -1,27 +1,29 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Input, Output } from '@angular/core';
 
 import { DialogRef, ModalComponent } from 'angular2-modal';
 import { BSModalContext } from 'angular2-modal/plugins/bootstrap';
 
 import { FormGroup, FormControl, Validators, FormControlName } from '@angular/forms';
 
-import {NgForm} from '@angular/forms';
+import { NgForm } from '@angular/forms';
 
 import { IProduct } from './product';
 import { ProductService } from './product.service';
 
+import { ProductListComponent } from './product-list.component';
+
 export class AdditionCalculateWindowData extends BSModalContext {
-  constructor(public num1: number, public num2: number) {
-    super();
-  }
+    constructor(public num1: number, public num2: number) {
+        super();
+    }
 }
 
 /**
  * A Sample of how simple it is to create a new window, with its own injects.
  */
 @Component({
-  selector: 'modal-content',
-  styles: [`
+    selector: 'modal-content',
+    styles: [`
         .custom-modal-container {
             padding: 15px;
         }
@@ -42,39 +44,44 @@ export class AdditionCalculateWindowData extends BSModalContext {
         <div class="container custom-modal-container">
          <form class="form-horizontal" [formGroup]="loginForm">
     <div class="form-group">
+      <label class="control-label col-sm-4" for="_id" hidden>Id:</label>
+      <div class="col-sm-8" class="hidden">
+        <input type="hidden" class="form-control" id="_id" formControlName="_id">
+      </div>
+      
       <label class="control-label col-sm-4" for="productname">Name:</label>
       <div class="col-sm-8">
-        <input type="text" class="form-control" id="productname" formControlName="name">
+        <input type="text" class="form-control" id="productname" formControlName="productName" autoComplete="off">
       </div>
 
       <label class="control-label col-sm-4" for="productname">Code:</label>
       <div class="col-sm-8">
-        <input type="text" class="form-control" id="productcode" formControlName="code">
+        <input type="text" class="form-control" id="productcode" formControlName="productCode" autoComplete="off">
       </div>
 
       <label class="control-label col-sm-4" for="productdescription">Description:</label>
       <div class="col-sm-8">
-        <input type="text" class="form-control" id="productdescription" formControlName="description">
+        <input type="text" class="form-control" id="productdescription" formControlName="description" autoComplete="off">
       </div>
 
       <label class="control-label col-sm-4" for="productprice">Price:</label>
       <div class="col-sm-8">
-        <input type="text" class="form-control" id="productprice" formControlName="price">
+        <input type="text" class="form-control" id="productprice" formControlName="price" autoComplete="off">
       </div>
 
       <label class="control-label col-sm-4" for="productreleasedate">Release Date:</label>
       <div class="col-sm-8">
-        <input type="date" class="form-control" id="productreleasedate" formControlName="releasedate">
+        <input type="date" class="form-control" id="productreleasedate" formControlName="releaseDate" autoComplete="off">
       </div>
 
       <label class="control-label col-sm-4" for="productstarrating">Star Rating:</label>
       <div class="col-sm-8">
-        <input type="number" class="form-control" id="productstarrating" formControlName="starrating">
+        <input type="number" class="form-control" id="productstarrating" formControlName="starRating" autoComplete="off">
       </div>
 
       <label class="control-label col-sm-4" for="productimage">Image:</label>
       <div class="col-sm-8">
-        <input type="file" class="form-control" id="productimage" formControlName="image">
+        <input type="text" class="form-control" id="productimage" formControlName="imageUrl" autoComplete="off">
       </div>
     </div>
     
@@ -89,52 +96,68 @@ export class AdditionCalculateWindowData extends BSModalContext {
         `
 })
 export class AdditionCalculateWindow implements ModalComponent<AdditionCalculateWindowData>, OnInit {
-  context: AdditionCalculateWindowData;
+    context: AdditionCalculateWindowData;
 
-  
-  errorMessage: string;
 
-  public loginForm = new FormGroup({
-    name: new FormControl("", Validators.required),
-    code: new FormControl("", Validators.required),
-    description: new FormControl("", Validators.required),
-    price: new FormControl("", Validators.required),
-    releasedate: new FormControl("", Validators.required),
-    starrating: new FormControl("", Validators.required),
-    image: new FormControl("", Validators.required),
-  });
+    @Output() public errorMessage: string = 'fxdfsf';
 
-  constructor(private _productService: ProductService, public dialog: DialogRef<AdditionCalculateWindowData>) {
-    this.context = dialog.context;
-   
-  }
+    @Output() public loginForm = new FormGroup({
+        _id: new FormControl(""),
+        productId: new FormControl("8", Validators.required),
+        productName: new FormControl("", Validators.required),
+        productCode: new FormControl("", Validators.required),
+        description: new FormControl("", Validators.required),
+        price: new FormControl("", Validators.required),
+        releaseDate: new FormControl("", Validators.required),
+        starRating: new FormControl("", Validators.required),
+        imageUrl: new FormControl("http://openclipart.org/image/300px/svg_to_png/73/rejon_Hammer.png", Validators.required),
+    });
 
-  ngOnInit(): void {
-      
-  }
+    constructor(private _productService: ProductService, public dialog: DialogRef<AdditionCalculateWindowData>) {
+        this.context = dialog.context;
+        this._productService.list1Event.subscribe((data: any) => {
+            console.log(data);
+            //delete data._id;
+            this.loginForm.setValue(data);
+            console.log(data);
+        });
 
-  onKeyUp(value: any) {
-   
-    this.dialog.close();
-  }
+    }
 
-  onCancel() {
-    this.dialog.close();
-  }
+    ngOnInit(): void {
 
-  beforeDismiss(): boolean {
-    return true;
-  }
+    }
 
-  beforeClose(): boolean {
-    return true;
-  }
+    onKeyUp(value: any) {
 
-  onSubmit(productEditor: NgForm) {
-    console.log(this.loginForm.value);
-    this._productService.addProduct(this.loginForm.value)
-              .subscribe(products => {},
-                          error => this.errorMessage = <any>error);
-    
-  }
+        this.dialog.close();
+    }
+
+    onCancel() {
+        this.dialog.close();
+    }
+
+    beforeDismiss(): boolean {
+        return true;
+    }
+
+    beforeClose(): boolean {
+        return true;
+    }
+
+    onSubmit(productEditor: NgForm) {
+        console.log(this.loginForm.value._id);
+        if (this.loginForm.value['_id']) {
+            this._productService.editProduct(this.loginForm.value)
+                .subscribe(products => { this.dialog.close(); location.reload(); },
+                error => this.errorMessage = <any>error);
+        } else {
+            delete this.loginForm.value["_id"];
+            this._productService.addProduct(this.loginForm.value)
+                .subscribe(products => { this.dialog.close(); location.reload(); },
+                error => this.errorMessage = <any>error);
+        }
+
+
+    }
 }

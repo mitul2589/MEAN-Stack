@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewContainerRef, ViewEncapsulation }  from '@angular/core';
+import { Component, OnInit, ViewContainerRef, ViewEncapsulation, Injectable, Output }  from '@angular/core';
 import { Modal, BSModalContext } from 'angular2-modal/plugins/bootstrap';
 
 import { Overlay, overlayConfigFactory } from 'angular2-modal';
@@ -15,6 +15,8 @@ import {NgForm} from '@angular/forms';
     styleUrls: ['app/products/product-list.component.css'],
    
 })
+
+@Injectable()
 export class ProductListComponent implements OnInit {
     pageTitle: string = 'Product List';
     imageWidth: number = 50;
@@ -22,6 +24,7 @@ export class ProductListComponent implements OnInit {
     showImage: boolean = false;
     listFilter: string;
     errorMessage: string;
+    selectedRow: number;
 
     products: IProduct[];
 
@@ -43,12 +46,31 @@ export class ProductListComponent implements OnInit {
         this.pageTitle = 'Product List: ' + message;
     }
 
+    selectRow(index: number): void {
+        this.selectedRow = index;
+    }
+
     openProductEditor(): void {
         this.modal.open(AdditionCalculateWindow, overlayConfigFactory({ num1: 2, num2: 3 }, BSModalContext));
     }
 
-    onSubmit(productEditor: NgForm): void {
-         console.log(productEditor);
-         debugger;
+    editProduct(): void {
+        console.log(this.products[this.selectedRow]);
+        this.modal.open(AdditionCalculateWindow, overlayConfigFactory({ num1: 2, num2: 3 }, BSModalContext));
+        this._productService.getProduct(this.products[this.selectedRow].productId);
+        //console.log(AdditionCalculateWindow.prototype.errorMessage);
+        //AdditionCalculateWindow.prototype.loginForm.setValue(value: { 'productName' : this.products[this.selectedRow].productName);
+        /*this._productService.getProduct(this.products[this.selectedRow])
+                .subscribe(product => { console.log(product); },
+                           error => this.errorMessage = <any>error);
+        */
+    }
+
+    deleteProduct(): void {
+        console.log(this.products[this.selectedRow]);
+        this._productService.deleteProduct(this.products[this.selectedRow])
+                .subscribe(products => { location.reload(); },
+                           error => this.errorMessage = <any>error);
+        
     }
 }

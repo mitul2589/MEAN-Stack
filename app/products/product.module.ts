@@ -38,6 +38,7 @@ import { BootstrapModalModule } from 'angular2-modal/plugins/bootstrap';
     ProductService,
     ProductDetailGuard
   ],
+  exports: [ProductListComponent]
   //entryComponents: [ AdditionCalculateWindow ]
 })
 export class ProductModule {}
