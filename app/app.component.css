@@ -6,6 +6,7 @@ div.panel-heading {
    font-size: x-large; 
 }
 
+
 div.modal-content {
     position: absolute;
     top: 30%;
@@ -17,4 +18,16 @@ div.modal-content {
 
 .custom-modal-container {
     width: 100%;
+}
+
+.form-horizontal .control-label {
+    text-align: left;
+}
+
+tr.active td {
+    background: skyblue !important;
+}
+
+.hidden  {
+    display: none;
 }
