@@ -1,6 +1,7 @@
 var express = require('express');
 var app = express();
 var path = require('path');
+var bodyParser = require('body-parser');
 var mongoose = require('mongoose');
 //var MongoClient = require('mongodb').MongoClient;
 var url = 'mongodb://localhost/local';
@@ -9,6 +10,9 @@ var url = 'mongodb://localhost/local';
 var Product = require(path.join(__dirname + '/app/models/product'));
 
 app.use(express.static(__dirname));
+app.use(bodyParser.urlencoded({ extended: false }))
+// parse application/json
+app.use(bodyParser.json());
 app.get('/', function (req, res) {
     res.sendFile(path.join(__dirname + '/index.html'));
 });
@@ -23,63 +27,99 @@ app.get('/test', function (req, res) {
 
 app.get('/api/products/', function (req, res) {
     var parr = [];
-    mongoose.connect(url, function(err, db) {
-        if(err) {
-           // console.log("Error");
+    mongoose.connect(url, function (err, db) {
+        if (err) {
+            // console.log("Error");
         } else {
-           // console.log("Yes, Connected...!!!!");
+            // console.log("Yes, Connected...!!!!");
         }
 
         Product.count((err, productsCount) => {
-            if(err) {
+            if (err) {
                 //console.log(err);
             } else {
                 //console.log("productsCount" + productsCount);
             }
 
             Product.find({}, (err, products) => {
-                res.json(products);      
+                res.json(products);
             });
         });
     });
 });
 
-app.post('/api/products/', function (request, res) {
-    var parr = [];
+app.post('/api/products/', function (req, res) {
+    console.log("Request Paramerts" + req.body.productName);
 
-    console.log("Request Paramerts" + request.query.param['name']);
-    console.log("Request Paramerts --->>" + request.param['name']);
-    console.log("Request Paramerts --->>" + request.params['name']);
-    mongoose.connect(url, function(err, db) {
-        if(err) {
+    mongoose.connect(url, function (err, db) {
+        if (err) {
             console.log("Error");
         } else {
             console.log("Yes, Connected...!!!!");
         }
 
-        var newproduct = new Product({
-            
-        "productId": 7,
-        "productName": "camera",
-        "productCode": "GDN-0023",
-        "releaseDate": "March 18, 2016",
-        "description": "15 gallon capacity rolling garden cart",
-        "price": 32.99,
-        "starRating": 4.2,
-        "imageUrl": "http://openclipart.org/image/300px/svg_to_png/58471/garden_cart.png"
-    
-        });
+        var newproduct = new Product(req.body);
         console.log("newproduct --->>>" + newproduct);
 
-        newproduct.save((err) => {
-            if(err) {
-                console.log("Error");
+        newproduct.save((err, item) => {
+            if (err) {
+                console.log("Product Saving Error" + err);
             } else {
-                console.log("Saved Successfully...");
+                console.log("Saved Successfully..." + item);
+                res.json(item);
             }
         })
 
-        
+
+    });
+});
+
+app.put('/api/products/', function (req, res) {
+    console.log("Request Paramerts" + req.body.productName);
+
+    mongoose.connect(url, function (err, db) {
+        if (err) {
+            console.log("Error");
+        } else {
+            console.log("Yes, Connected...!!!!");
+        }
+
+        Product.find({ 'productId': req.body.productId }, (err, product) => {
+            console.log("Find Product" + product);
+            product.save((err, item) => {
+                if (err) {
+                    console.log("Product Saving Error" + err);
+                } else {
+                    console.log("Saved Successfully..." + item);
+                    res.json(item);
+                }
+            })
+        });
+    });
+});
+
+app.delete('/api/products/:productId', function (req, res) {
+    console.log("Request Paramerts" + req.params.productId);
+
+    mongoose.connect(url, function (err, db) {
+        if (err) {
+            console.log("Error" + err);
+        } else {
+            console.log("Yes, Connected...!!!!");
+        }
+
+        Product.remove({ 'productId': req.params.productId }, (err, result) => {
+            console.log("result ---->>>>" + result);
+            
+            if (err) {
+                console.log("Product Deleting Error" + err);
+            } else if (result) {
+                console.log("Deleted Successfully..." + result);
+                res.json("Success");
+            } else {
+                console.log("No Result Found...!!!");
+            }
+        });
     });
 });
 
