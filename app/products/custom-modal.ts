@@ -102,8 +102,8 @@ export class AdditionCalculateWindow implements ModalComponent<AdditionCalculate
     @Output() public errorMessage: string = 'fxdfsf';
 
     @Output() public loginForm = new FormGroup({
-        _id: new FormControl(""),
-        productId: new FormControl("8", Validators.required),
+        _id: new FormControl(),
+        //productId: new FormControl("8", Validators.required),
         productName: new FormControl("", Validators.required),
         productCode: new FormControl("", Validators.required),
         description: new FormControl("", Validators.required),
@@ -152,12 +152,10 @@ export class AdditionCalculateWindow implements ModalComponent<AdditionCalculate
                 .subscribe(products => { this.dialog.close(); location.reload(); },
                 error => this.errorMessage = <any>error);
         } else {
-            delete this.loginForm.value["_id"];
+            //delete this.loginForm.value["_id"];
             this._productService.addProduct(this.loginForm.value)
                 .subscribe(products => { this.dialog.close(); location.reload(); },
                 error => this.errorMessage = <any>error);
         }
-
-
     }
 }
