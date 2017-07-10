@@ -7,7 +7,8 @@ var mongoose = require('mongoose');
 var url = 'mongodb://localhost/local';
 //var Schema = mongoose.Schema;
 
-var Product = require(path.join(__dirname + '/app/models/product'));
+var Product = require(path.join(__dirname + '/app/models/products'));
+var Counter = require(path.join(__dirname + '/app/models/counters'));
 
 app.use(express.static(__dirname));
 app.use(bodyParser.urlencoded({ extended: false }))
@@ -52,6 +53,7 @@ app.get('/api/products/', function (req, res) {
             }
 
             Product.find({}, (err, products) => {
+                console.log(products);
                 res.json(products);
             });
         });
@@ -59,7 +61,7 @@ app.get('/api/products/', function (req, res) {
 });
 
 app.post('/api/products/', function (req, res) {
-    console.log("Request Paramerts" + req.body.productName);
+    //console.log("Request Paramerts" + req.body.productName);
 
     mongoose.connect(url, function (err, db) {
         if (err) {
@@ -68,21 +70,36 @@ app.post('/api/products/', function (req, res) {
             console.log("Yes, Connected...!!!!");
         }
 
-        function getNextSequenceValue(sequenceName) {
-
-            var sequenceDocument = db.counters.findAndModify({
-                query: { _id: sequenceName },
-                update: { $inc: { sequence_value: 1 } },
-                new: true
-            });
-
-            return 2;
-
-        }
-
         var newproduct = new Product(req.body);
 
-        newproduct._id = getNextSequenceValue("productId"); //this.getNextSequenceValue('productId');
+        function getNextSequenceValue(sequenceName, callback) {
+            let seq = Counter.find({}, (err, item) => {
+                console.log("Item --->" + item[0].sequence_value);
+                item[0].sequence_value += 1;
+                item[0].save((err, item) => {
+                    callback(null, item.sequence_value);
+                });
+            });
+        }
+
+        getNextSequenceValue("productId", (err, seq) => {
+            console.log("Sequence---->" + seq);
+            newproduct._id = seq;
+            console.log("newproduct --->>>" + newproduct);
+            newproduct.save((err, item) => {
+                console.log("Item =====" + item);
+                if (err) {
+                    console.log("Product Saving Error" + err);
+                } else {
+                    console.log("Saved Successfully..." + item);
+                    res.json(item);
+                }
+            })
+        });
+
+
+
+        /*newproduct._id = getNextSequenceValue("productId"); //this.getNextSequenceValue('productId');
         console.log("newproduct --->>>" + newproduct);
 
         newproduct.save((err, item) => {
@@ -92,15 +109,15 @@ app.post('/api/products/', function (req, res) {
                 console.log("Saved Successfully..." + item);
                 res.json(item);
             }
-        })
+        })*/
 
 
     });
 });
 
 app.put('/api/products/', function (req, res) {
-    console.log("Request Paramerts" + req.body.productName);
-
+    console.log("Request Paramerts" + req.body);
+    let body = req.body;
     mongoose.connect(url, function (err, db) {
         if (err) {
             console.log("Error");
@@ -108,13 +125,15 @@ app.put('/api/products/', function (req, res) {
             console.log("Yes, Connected...!!!!");
         }
 
-        Product.find({ 'productId': req.body.productId }, (err, product) => {
+        Product.find({ '_id': req.body._id }, (err, product) => {
             console.log("Find Product" + product);
-            product.save((err, item) => {
+            var updatedProduct = new Product(req.body);
+            console.log("Find Product" + updatedProduct);
+            updatedProduct.update(body, (err, item) => {
                 if (err) {
                     console.log("Product Saving Error" + err);
                 } else {
-                    console.log("Saved Successfully..." + item);
+                    console.log("Saved Successfully..." + item.productName);
                     res.json(item);
                 }
             })
@@ -132,7 +151,7 @@ app.delete('/api/products/:productId', function (req, res) {
             console.log("Yes, Connected...!!!!");
         }
 
-        Product.remove({ 'productId': req.params.productId }, (err, result) => {
+        Product.remove({ '_id': req.params.productId }, (err, result) => {
             console.log("result ---->>>>" + result);
 
             if (err) {
