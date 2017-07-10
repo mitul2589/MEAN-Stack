@@ -76,7 +76,7 @@ export class AdditionCalculateWindowData extends BSModalContext {
 
       <label class="control-label col-sm-4" for="productstarrating">Star Rating:</label>
       <div class="col-sm-8">
-        <input type="number" class="form-control" id="productstarrating" formControlName="starRating" autoComplete="off">
+        <input type="number" step="any" class="form-control" id="productstarrating" formControlName="starRating" autoComplete="off">
       </div>
 
       <label class="control-label col-sm-4" for="productimage">Image:</label>
@@ -152,7 +152,7 @@ export class AdditionCalculateWindow implements ModalComponent<AdditionCalculate
                 .subscribe(products => { this.dialog.close(); location.reload(); },
                 error => this.errorMessage = <any>error);
         } else {
-            //delete this.loginForm.value["_id"];
+            delete this.loginForm.value["_id"];
             this._productService.addProduct(this.loginForm.value)
                 .subscribe(products => { this.dialog.close(); location.reload(); },
                 error => this.errorMessage = <any>error);

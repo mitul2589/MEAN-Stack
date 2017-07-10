@@ -26,7 +26,7 @@ export class ProductService {
 
     getProduct(id: number) {
         return this.getProducts()
-            .map((products: IProduct[]) => products.find(p => p.productId === id))
+            .map((products: IProduct[]) => products.find(p => p._id === id))
             .subscribe((data) => this.list1Event.emit(data)); 
     }
 
@@ -45,7 +45,7 @@ export class ProductService {
     }
 
     deleteProduct(product: IProduct): Observable<void> {
-        return this._http.delete(this._productUrl + '/' + product.productId, product)
+        return this._http.delete(this._productUrl + '/' + product._id, product)
                .map((response: Response) => {});
     }
 

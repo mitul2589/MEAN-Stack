@@ -57,7 +57,7 @@ export class ProductListComponent implements OnInit {
     editProduct(): void {
         console.log(this.products[this.selectedRow]);
         this.modal.open(AdditionCalculateWindow, overlayConfigFactory({ num1: 2, num2: 3 }, BSModalContext));
-        this._productService.getProduct(this.products[this.selectedRow].productId);
+        this._productService.getProduct(this.products[this.selectedRow]._id);
         //console.log(AdditionCalculateWindow.prototype.errorMessage);
         //AdditionCalculateWindow.prototype.loginForm.setValue(value: { 'productName' : this.products[this.selectedRow].productName);
         /*this._productService.getProduct(this.products[this.selectedRow])
