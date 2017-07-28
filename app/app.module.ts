@@ -14,7 +14,9 @@ import { WelcomeComponent } from './home/welcome.component';
 import { ProductModule } from './products/product.module';
 
 import { AdditionCalculateWindow } from './products/custom-modal';
-         
+
+import { ParentModule } from './parent/parent.module';
+
 
 @NgModule({
   imports: [
@@ -29,7 +31,8 @@ import { AdditionCalculateWindow } from './products/custom-modal';
     ]),
     ProductModule,
     FormsModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    ParentModule
   ],
   declarations: [
     AppComponent,
