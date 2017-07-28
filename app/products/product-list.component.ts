@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewContainerRef, ViewEncapsulation, Injectable, Output }  from '@angular/core';
+import { Component, OnInit, ViewContainerRef, ViewEncapsulation, Injectable, Output, DoCheck }  from '@angular/core';
 import { Modal, BSModalContext } from 'angular2-modal/plugins/bootstrap';
 
 import { Overlay, overlayConfigFactory } from 'angular2-modal';
@@ -10,14 +10,16 @@ import { ProductService } from './product.service';
 
 import {NgForm} from '@angular/forms';
 
+//import {PaginatePipe, PaginationService} from 'ng2-pagination';
+
 @Component({
     templateUrl: 'app/products/product-list.component.html',
     styleUrls: ['app/products/product-list.component.css'],
-   
+    
 })
 
 @Injectable()
-export class ProductListComponent implements OnInit {
+export class ProductListComponent implements OnInit, DoCheck {
     pageTitle: string = 'Product List';
     imageWidth: number = 50;
     imageMargin: number = 2;
@@ -25,8 +27,9 @@ export class ProductListComponent implements OnInit {
     listFilter: string;
     errorMessage: string;
     selectedRow: number;
-
     products: IProduct[];
+
+    testNgSwitch: string = '1';
 
     constructor(private _productService: ProductService, vcRef: ViewContainerRef, public modal: Modal) {
         //modal.
@@ -42,12 +45,17 @@ export class ProductListComponent implements OnInit {
                            error => this.errorMessage = <any>error);
     }
 
+    ngDoCheck(): void {
+        //console.log("12345");
+    }
+
     onRatingClicked(message: string): void {
         this.pageTitle = 'Product List: ' + message;
     }
 
     selectRow(index: number): void {
         this.selectedRow = index;
+       
     }
 
     openProductEditor(): void {
@@ -72,5 +80,9 @@ export class ProductListComponent implements OnInit {
                 .subscribe(products => { location.reload(); },
                            error => this.errorMessage = <any>error);
         
+    }
+
+    trackByProducts(index: number, product: IProduct) {
+       return product._id;
     }
 }

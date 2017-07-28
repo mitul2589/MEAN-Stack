@@ -51,7 +51,7 @@ export class AdditionCalculateWindowData extends BSModalContext {
       
       <label class="control-label col-sm-4" for="productname">Name:</label>
       <div class="col-sm-8">
-        <input type="text" class="form-control" id="productname" formControlName="productName" autoComplete="off">
+        <input type="text" class="form-control" id="productname" required formControlName="productName" autoComplete="off">
       </div>
 
       <label class="control-label col-sm-4" for="productname">Code:</label>
@@ -116,8 +116,6 @@ export class AdditionCalculateWindow implements ModalComponent<AdditionCalculate
     constructor(private _productService: ProductService, public dialog: DialogRef<AdditionCalculateWindowData>) {
         this.context = dialog.context;
         this._productService.list1Event.subscribe((data: any) => {
-            console.log(data);
-            //delete data._id;
             this.loginForm.setValue(data);
             console.log(data);
         });
