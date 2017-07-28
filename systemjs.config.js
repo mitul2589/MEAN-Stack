@@ -24,10 +24,11 @@
       '@angular/forms': 'npm:@angular/forms/bundles/forms.umd.js',
       'angular2-modal': 'npm:angular2-modal',
       'angular2-modal/plugins/bootstrap': '/node_modules/angular2-modal/bundles',
+      '@angular/animations': 'npm:@angular/animations',
 
       // other libraries
       'rxjs': 'npm:rxjs',
-      'test': 'npm:send'
+      //'ngx-pagination': 'npm:ngx-pagination'
     },
 
 
@@ -49,7 +50,15 @@
       'angular2-modal/plugins/bootstrap': {
         defaultExtension: 'js', 
         main: `angular2-modal.bootstrap.umd`
-      }
+      },
+      '@angular/animations': { 
+        defaultExtension: 'js', 
+        main: 'bundles/animations-browser.umd' 
+      },
+      /*'ngx-pagination': { 
+        defaultExtension: 'js', 
+        main: 'dist/ngx-pagination.umd'
+      }*/
     }
   });
 
