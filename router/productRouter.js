@@ -11,7 +11,10 @@ function getNextSequence(sequenceName, callback) {
         } else {
             console.log("counter -->>>" + counter[0]);
             counter[0].sequence_value += 1;
-            callback(null, counter[0].sequence_value);
+            counter[0].save((err, result) => {
+                callback(null, result.sequence_value);
+            });
+
         }
 
     });
