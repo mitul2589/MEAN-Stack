@@ -4,6 +4,7 @@ import { RouterModule } from '@angular/router'
 import { ParentComponent } from './parent.component'
 import { SharedModule } from '../shared/shared.module';
 import { MyHighLightDirective } from '../shared/highlight.directive'
+import { LoginModal } from './login.component';
 
 @NgModule({
     imports: [
@@ -12,8 +13,9 @@ import { MyHighLightDirective } from '../shared/highlight.directive'
            { path: 'parent', component: ParentComponent }
        ])
     ],
-    declarations: [ ParentComponent, MyHighLightDirective ],
-    exports: [ ParentComponent ]
+    declarations: [ ParentComponent, MyHighLightDirective, LoginModal ],
+    exports: [ ParentComponent ],
+    entryComponents: [ LoginModal ]
 })
 
 export class ParentModule {}
