@@ -5,7 +5,7 @@ import { BSModalContext } from 'angular2-modal/plugins/bootstrap';
 @Component({
     selector: 'login',
     styles: [],
-    template: `<div class="modal-content">
+    template: `
                  <div class="modal-header">
                  <button type="button" class="close" data-dismiss="modal">&times;</button>
                  <h4 class="modal-title">Login</h4>
@@ -23,7 +23,7 @@ import { BSModalContext } from 'angular2-modal/plugins/bootstrap';
                 <div class="modal-footer">
                 <div>
                 <button type="submit" class="btn btn-primary btn-lg btn-block">Login</button>
-                </div>`
+              `
 })
 
 export class LoginModal implements CloseGuard, ModalComponent<BSModalContext> {
